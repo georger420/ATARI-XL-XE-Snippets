@@ -27,7 +27,7 @@ Implementation of faster algorithm for drawing circle and ellipse in **ATARI BAS
 
 ## [TURBO 2000 BASIC SAVER](./src/basavtos.mal.txt)
 
-Programm determined for using together with Turbo 2000 operating system **TOS4.1**. ATARI BASIC programms could be saved using TURBO 2000 in several blocks with size 1kB by similar way like CSAVE. TURBO 2000 BASIC SAVER makes possible to save ATARI BASIC programm in one large block, where the modified address of programm in memory can be changed and written into header. Programm is written fully in assembler MAC/65. An [executable](./releases/BASAVTOS4.COM.xex) and short [user guide](./doc/T2000BasicSaver.md) are available. ATARI tape recorder with TURBO 2000 modification is necessary.
+Program determined for using together with Turbo 2000 operating system **TOS4.1**. ATARI BASIC programs could be saved using TURBO 2000 in several blocks with size 1kB by similar way like CSAVE. TURBO 2000 BASIC SAVER makes possible to save ATARI BASIC program in one large block, where the modified address of program in memory can be changed and written into header. Program is written fully in assembler MAC/65. An [executable](./releases/BASAVTOS4.COM.xex) and short [user guide](./doc/T2000BasicSaver.md) are available. ATARI tape recorder with TURBO 2000 modification is necessary.
 
 ## [Czech ATARI BASIC](./releases/csbasic.com.xex)
 
