@@ -1,0 +1,16 @@
+1 ------------------------------
+2 REM SAM PICTURES LOADER
+3 ------------------------------
+10 DIM FILIN$(20)
+20 INPUT "DEV:SAM-PIC FILENAME:  ",FILIN$
+30 GRAPHICS 31
+40 OPEN #1,4,0,FILIN$:BGET #1,DPEEK(88),7680:GET #1,A
+50 GET #1,A:POKE 712,A:GOSUB 120
+60 GET #1,A:POKE 708,A:GOSUB 120
+70 GET #1,A:POKE 709,A:GOSUB 120
+80 GET #1,A:POKE 710,A:CLOSE #1
+90 IF PEEK(53279)=7 THEN 90
+100 STOP 
+110 ------------------------------
+120 FOR J=1 TO 127:GET #1,A:NEXT J:RETURN 
+130 ------------------------------

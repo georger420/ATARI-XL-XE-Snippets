@@ -1,0 +1,166 @@
+                1000     .TITLE "*** MYŠ: TESLA 3 WN 16607 ***"
+                1010 ;
+                1020     .SET 1,6
+                1030     .SET 3,0
+                1040     .SET 4,72
+                1050 ;
+                1060 ;PROMÌNNÉ
+                1070 ;
+    =7000       1080 PMAREA = $7000
+    =7200       1090 POBASE = PMAREA+512
+                1100 ;
+    =D300       1110 PORT =  $D300
+    =D000       1120 M0PF =  $D000
+    =D407       1130 PMBASE = $D407
+    =D01D       1140 GRACTL = $D01D
+    =D200       1150 AUDF1 = $D200
+    =D20E       1160 IRQEN = $D20E
+    =D209       1170 STIMER = $D209
+                1180 ;
+    =0010       1190 POKMSK = $10
+    =0014       1200 RTCLOCK = $14
+    =0042       1210 CRITIC = $42
+    =0210       1220 VTIMR1 = $0210
+    =022F       1230 SDMCTL = $022F
+    =02C0       1240 PCOLR0 = $02C0
+                1250 ;
+    =7004       2000 YPOS =  XPOS+1
+    =7005       2010 XFLG =  XPOS+2
+    =7006       2020 YFLG =  XPOS+3
+                2030 ;
+0000            2040     *=  PMAREA
+                2050 ;
+7000 4C0870     2060     JMP RUN     ;start instalaèní rutiny
+                2070 ;
+7003 78400000   2100 XPOS .BYTE $78,$40,$00,$00
+                2110 ;
+7007 68         2140 RUNB PLA        ;start instalace z bas.
+7008 78         2150 RUN SEI 
+7009 A92E       2160     LDA #$2E    ;dvouøádková výška pixelu
+700B 8D2F02     2170     STA SDMCTL
+700E A93F       2180     LDA #$3F    ;barva hráèe 0
+7010 8DC002     2190     STA PCOLR0
+7013 A978       2200     LDA #$78    ;poèát. x-poz. hráèe 0
+7015 8D00D0     2210     STA M0PF
+7018 A970       2220     LDA # >PMAREA ;nastavit prostor PMG
+701A 8D07D4     2230     STA PMBASE
+701D A902       2240     LDA #$02
+701F 8D1DD0     2250     STA GRACTL  ;zapnout hráèe
+7022 A27F       2260     LDX #$7F    ;vymazat prostor hráèe
+7024 A900       2270     LDA #$00
+7026 9D0072     2280 LOP0 STA POBASE,X
+7029 CA         2290     DEX 
+702A 10FA       2300     BPL LOP0
+702C A204       2310     LDX #$04    ;vložit tvar hráèe
+702E BDF170     2320 LOP1 LDA FONT,X
+7031 9D4072     2330     STA POBASE+64,X
+7034 CA         2340     DEX 
+7035 10F7       2350     BPL LOP1
+                2354 ;
+                2355 ;** SET TIMER1 **
+                2356 ;
+7037 A920       2360     LDA #$20    ;nastavit cca 1 kHz
+7039 8D00D2     2370     STA AUDF1
+703C A510       2380     LDA POKMSK  ;povolit pøerušení
+703E 0901       2390     ORA #$01    ;z èasovaèe 1
+7040 8510       2400     STA POKMSK
+7042 8D0ED2     2410     STA IRQEN
+7045 A954       2420     LDA # <TIMIRQ
+7047 8D1002     2430     STA VTIMR1
+704A A970       2440     LDA # >TIMIRQ
+704C 8D1102     2450     STA VTIMR1+1
+704F 8D09D2     2460     STA STIMER  ;spustit èasovaè
+7052 58         2470     CLI 
+7053 60         2480     RTS 
+                2484 ;
+                2485 ;** IRQ - ROUTINE **
+                2486 ;
+7054 A542       2490 TIMIRQ LDA CRITIC ;kritický stav?
+7056 D059       2500     BNE EXIT1   ;ano=>EXIT, tj.
+                2505 ;                žádné vyhodnocení
+7058 8D09D2     2510     STA STIMER  ;èasovaè znovu spustit
+705B 8A         2520     TXA         ;uklidit registry
+705C 48         2530     PHA         ;X a Y
+705D 98         2540     TYA 
+705E 48         2550     PHA 
+705F A514       2560     LDA RTCLOCK ;blikat hráèem 0
+7061 2910       2570     AND #$10
+7063 F00C       2580     BEQ T1
+7065 A900       2590     LDA #$00
+7067 8514       2600     STA RTCLOCK
+7069 ADC002     2610     LDA PCOLR0
+706C 4904       2620     EOR #$04
+706E 8DC002     2630     STA PCOLR0
+7071 AD00D3     2640 T1  LDA PORT    ;testovat myš
+7074 290A       2650     AND #$0A    ;vodorovný pohyb?
+7076 C90A       2660     CMP #$0A
+7078 F020       2670     BEQ NOTLR   ;ne, nastavit pøíznak
+                2675 ;
+707A AE0570     2680 LR  LDX XFLG    ;vpravo/vlevo?
+707D F020       2690     BEQ TSTUD
+707F A200       2700     LDX #$00    ;pøíznak zrušit
+7081 8E0570     2710     STX XFLG
+7084 A201       2720     LDX #$01
+7086 C902       2730     CMP #$02    ;vpravo?
+7088 D002       2740     BNE LR1     ;ano!
+708A A2FF       2750     LDX #$FF    ;ne! Zmenšit XPOS
+708C 8A         2760 LR1 TXA         ;zvýšit XPOS
+708D 18         2770     CLC 
+708E 6D0370     2780     ADC XPOS
+7091 8D0370     2790     STA XPOS    ;nová X-pozice
+7094 8D00D0     2800     STA M0PF
+7097 4C9F70     2810     JMP TSTUD   ;testovat svislý pohyb
+                2815 ;
+709A A901       2820 NOTLR LDA #$01  ;nastavit pøíznak
+709C 8D0570     2830     STA XFLG
+                2835 ;
+709F AD00D3     2840 TSTUD LDA PORT  ;test myši
+70A2 2905       2850     AND #$05
+70A4 C905       2860     CMP #$05    ;svislý pohyb?
+70A6 D00B       2870     BNE UD      ;ano
+70A8 A901       2880     LDA #$01
+70AA 8D0670     2890     STA YFLG    ;ne;nastavit pøíznak
+70AD 68         2900 EXIT PLA        ;obnovit registry X a Y
+70AE A8         2910     TAY 
+70AF 68         2920     PLA 
+70B0 AA         2930     TAX 
+70B1 68         2940 EXIT1 PLA 
+70B2 40         2950     RTI         ;opustit rutinu!
+                2955 ;
+70B3 AE0670     2960 UD  LDX YFLG
+70B6 F0F5       2970     BEQ EXIT
+70B8 A200       2980     LDX #$00    ;smazat pøíznak
+70BA 8E0670     2990     STX YFLG
+70BD A201       3000     LDX #$01
+70BF C904       3010     CMP #$04    ;nahoru?
+70C1 F002       3020     BEQ UD1     ;ano!
+70C3 A2FF       3030     LDX #$FF    ;ne!
+70C5 8A         3040 UD1 TXA 
+70C6 48         3050     PHA 
+70C7 AE0470     3060     LDX YPOS    ;smazat hráèe
+70CA A004       3070     LDY #$04
+70CC A900       3080     LDA #$00
+70CE 9D0072     3090 LOP2 STA POBASE,X
+70D1 E8         3100     INX 
+70D2 88         3110     DEY 
+70D3 10F9       3120     BPL LOP2
+70D5 68         3130     PLA 
+70D6 18         3140     CLC 
+70D7 6D0470     3150     ADC YPOS
+70DA 297F       3160     AND #$7F
+70DC 8D0470     3170     STA YPOS
+70DF A004       3180     LDY #$04    ;zobrazit hráèe v nové
+70E1 AE0470     3190     LDX YPOS    ;vertikální pozici
+70E4 B9F170     3200 LOP3 LDA FONT,Y
+70E7 9D0072     3210     STA POBASE,X
+70EA E8         3220     INX 
+70EB 88         3230     DEY 
+70EC 10F6       3240     BPL LOP3
+70EE 4CAD70     3250     JMP EXIT    ;opustit rutinu!
+                3260 ;
+                3270 ;Tvar hráèe 0
+                3280 ;
+70F1 0890E0E0   3290 FONT .BYTE $08,$90,$E0,$E0,$F0
+70F5 F0
+
+*** ASSEMBLY ERRORS: 0   21911 BYTES FREE
