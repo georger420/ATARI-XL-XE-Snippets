@@ -84,6 +84,6 @@ Handler for **Tesla EM 3 WN 16607** mouse in assembler. It is modified program f
 
 
 
-[^1]: Ladislav Drs: Plochy vevýpočetní technice. SNTL 1984.  
+[^1]: Ladislav Drs: Plochy ve výpočetní technice. SNTL 1984.  
 [^2]: Thomas Tausend Softwarebastelei. Computer Kontakt 8/1986  
 [^3]: Clausdorf, Dittrich: Tips & Tricks zum ATARI XE/XL. Ein DATA BECKER BUCH.
