@@ -4,7 +4,7 @@ This repository contains short programs or parts of programs, helper programs, e
 
 ## [Dictionary](./src/SLOVNIK1.LST.txt)
 
-This program in ATARI BASIC is interesting only in that, unlike the programs for ATARI at that time, it does not have a fixed length allocated in memory for individual items. Each item and its meaning can vary in length. An index array is created containing pointers to the items, which is used for sorting - items are not physically moved in memory, but only the pointers in the index array are moved. The sorting algorithm used is "Bubble sort". Since the list of items is sortedg, a faster algorithm  "binary search" can be used for searching. Source code is in "SLOVNIK1.LST.txt" file.
+This program in ATARI BASIC is interesting only in that, unlike the programs for ATARI at that time, it does not have a fixed length allocated in memory for individual items. Each item and its meaning can vary in length. An index array is created containing pointers to the items, which is used for sorting - items are not physically moved in memory, but only the pointers in the index array are moved. The sorting algorithm used is "Bubble sort". Since the list of items is sorted, a faster algorithm  "binary search" can be used for searching. Source code is in "SLOVNIK1.LST.txt" file.
 
 ## [8035 microcontroller monitor/disassembler](./src/8035MON.TBL.txt)
 
